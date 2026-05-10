@@ -2,92 +2,6 @@
 
 > Production-ready sentiment analysis system using BERT with FastAPI backend and React frontend
 
-[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![Transformers](https://img.shields.io/badge/Transformers-4.0+-orange.svg)](https://huggingface.co/transformers/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.68+-green.svg)](https://fastapi.tiangolo.com/)
-[![React](https://img.shields.io/badge/React-18+-61DAFB.svg)](https://reactjs.org/)
-
-## 📖 Overview
-
-SentiTune is a complete end-to-end sentiment analysis application that demonstrates production-level transformer fine-tuning and deployment. The project fine-tunes BERT on the IMDb dataset and deploys it through a FastAPI backend with a modern React frontend.
-
-### Key Features
-
-- ✅ BERT fine-tuned on 25,000 IMDb movie reviews
-- ✅ FastAPI REST API for real-time inference
-- ✅ React-based web interface
-- ✅ Mixed precision training (FP16) for efficiency
-- ✅ Production-ready model serving
-- ✅ Complete training notebook included
-
----
-
-## 🏗️ Project Structure
-
-```
-FINETUNNING_WITH_BERT/
-├── frontend/                      # React web application
-│   ├── src/
-│   │   ├── App.js
-│   │   ├── App.test.js
-│   │   ├── index.css
-│   │   ├── index.js
-│   │   └── reportWebVitals.js
-│   ├── package.json
-│   └── package-lock.json
-│
-├── sentiment_model/               # Fine-tuned BERT model
-│   ├── config.json
-│   ├── model.safetensors
-│   ├── tokenizer_config.json
-│   ├── tokenizer.json
-│   └── training_args.bin
-│
-├── main.py                        # FastAPI backend server
-├── model.py                       # Model loading & inference logic
-└── SentiTune_BERT_Fine_Tuning_for_Sentiment_Analysis.ipynb
-```
-
----
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Python 3.8 or higher
-- Node.js 14+ and npm
-- CUDA-compatible GPU (for training, optional for inference)
-- 8GB+ RAM
-
-### Backend Setup
-
-```bash
-# Install Python dependencies
-pip install transformers torch fastapi uvicorn pydantic
-
-# Start the FastAPI server
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
-```
-
-The API will be available at `http://localhost:8000`
-
-### Frontend Setup
-
-```bash
-# Navigate to frontend directory
-cd frontend
-
-# Install dependencies
-npm install
-
-# Start development server
-npm start
-```
-
-The web app will open at `http://localhost:3000`
-
----
-
 ## 🎯 Model Training
 
 ### Training Configuration
@@ -136,73 +50,6 @@ The notebook covers:
 5. Model saving
 6. Inference testing
 
----
-
-## 🔧 API Usage
-
-### Health Check
-
-```bash
-curl http://localhost:8000/
-```
-
-Response:
-```json
-{
-  "message": "SentiTune API is running 🚀"
-}
-```
-
-### Sentiment Prediction
-
-```bash
-curl -X POST http://localhost:8000/predict \
-  -H "Content-Type: application/json" \
-  -d '{"text": "This movie was absolutely fantastic!"}'
-```
-
-Response:
-```json
-{
-  "text": "This movie was absolutely fantastic!",
-  "sentiment": "Positive"
-}
-```
-
-### Using Python
-
-```python
-import requests
-
-response = requests.post(
-    "http://localhost:8000/predict",
-    json={"text": "I loved this movie!"}
-)
-
-print(response.json())
-# Output: {'text': 'I loved this movie!', 'sentiment': 'Positive'}
-```
-
----
-
-## 💻 Frontend Features
-
-The React frontend provides:
-
-- Clean, modern UI for sentiment analysis
-- Real-time API integration
-- Input validation
-- Responsive design
-- Sentiment visualization
-
-### Using the Web App
-
-1. Open `http://localhost:3000` in your browser
-2. Enter any text in the input field
-3. Click "Analyze Sentiment"
-4. View the predicted sentiment (Positive/Negative)
-
----
 
 ## 📊 Training Pipeline
 
@@ -221,18 +68,7 @@ BERT Base Uncased Model
    Model Checkpoint
          ↓
     Deployment
-```
 
-### Core Components
-
-| Component | Implementation |
-|-----------|----------------|
-| Dataset | IMDb movie reviews (Hugging Face Datasets) |
-| Tokenizer | `bert-base-uncased` AutoTokenizer |
-| Model | BERT for Sequence Classification (2 labels) |
-| Training | Hugging Face Trainer API |
-| Optimization | AdamW with FP16 mixed precision |
-| Deployment | FastAPI REST API |
 
 ---
 
@@ -266,16 +102,10 @@ Reduces memory usage and speeds up training:
 ```
 transformers>=4.30.0
 torch>=2.0.0
-fastapi>=0.100.0
-uvicorn>=0.23.0
-pydantic>=2.0.0
+0
 ```
 
-### Frontend
-```
-react>=18.0.0
-axios or fetch API
-```
+
 
 ### Training (Notebook)
 ```
@@ -330,82 +160,6 @@ accelerate>=0.20.0
 
 ---
 
-## 🚀 Deployment Options
-
-### 1. Local Deployment (Development)
-```bash
-uvicorn main:app --host 0.0.0.0 --port 8000
-```
-
-### 2. Production Deployment
-
-**Using Docker:**
-```dockerfile
-FROM python:3.9-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
-
-**Using Gunicorn (Production Server):**
-```bash
-pip install gunicorn
-gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
-```
-
-### 3. Cloud Deployment
-
-- **AWS**: Deploy on EC2 with Auto Scaling
-- **Google Cloud**: Use Cloud Run for serverless deployment
-- **Azure**: Deploy on Azure App Service
-- **Heroku**: Simple deployment with Procfile
-
----
-
-## 🐛 Troubleshooting
-
-### Backend Issues
-
-**Model not loading:**
-```bash
-# Ensure the sentiment_model directory exists
-ls -la sentiment_model/
-
-# Verify all required files are present:
-# - config.json
-# - model.safetensors
-# - tokenizer_config.json
-# - tokenizer.json
-```
-
-**Port already in use:**
-```bash
-# Use a different port
-uvicorn main:app --port 8001
-```
-
-**CORS errors:**
-- Check that CORS middleware is properly configured in `main.py`
-- Ensure frontend origin is allowed
-
-### Frontend Issues
-
-**npm install fails:**
-```bash
-# Clear cache and retry
-npm cache clean --force
-rm -rf node_modules package-lock.json
-npm install
-```
-
-**API connection errors:**
-- Verify backend is running on port 8000
-- Check network firewall settings
-- Ensure correct API endpoint in frontend code
-
----
 
 ## 📚 Resources
 
@@ -420,20 +174,6 @@ npm install
 
 ### Datasets
 - [IMDb Dataset on Hugging Face](https://huggingface.co/datasets/imdb)
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Areas for improvement:
-
-- [ ] Add evaluation metrics visualization
-- [ ] Implement model confidence scores
-- [ ] Add support for batch predictions
-- [ ] Create Docker compose setup
-- [ ] Add unit tests for API endpoints
-- [ ] Implement model versioning
-- [ ] Add CI/CD pipeline
 
 ---
 
@@ -452,7 +192,6 @@ This project is licensed under the MIT License.
 
 ---
 
-## 📧 Contact
 
 For questions, issues, or collaboration opportunities, please open an issue on GitHub.
 
